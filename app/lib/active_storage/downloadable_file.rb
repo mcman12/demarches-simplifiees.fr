@@ -7,16 +7,11 @@ class ActiveStorage::DownloadableFile
     end
   end
 
-  def url
-    @url
-  end
-
   def self.create_list_from_dossier(dossier)
     pjs = PiecesJustificativesService.liste_pieces_justificatives(dossier)
     pjs.map do |piece_justificative|
       [
-        ActiveStorage::DownloadableFile.new(piece_justificative),
-        piece_justificative.filename.to_s
+        ActiveStorage::DownloadableFile.new(piece_justificative)
       ]
     end
   end
