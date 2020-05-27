@@ -367,7 +367,8 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :archives, only: [:index, :create, :show], controller: 'archives'
+        resources :archives, only: [:index, :show], controller: 'archives'
+        get 'create_archive' => 'archives#create_archive'
       end
     end
     get "recherche" => "recherche#index"
