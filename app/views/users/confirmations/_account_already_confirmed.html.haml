@@ -1,0 +1,9 @@
+- content_for(:title, 'Confirmez votre adresse email')
+
+.container.devise-container.devise-confirmations
+  .one-column-centered
+    %h1.center Votre compte est déja activé
+
+    %p
+      Vous pouvez vous dès à présent vous connecter
+      = link_to 'en cliquant sur le lien suivant.', new_user_session_path
