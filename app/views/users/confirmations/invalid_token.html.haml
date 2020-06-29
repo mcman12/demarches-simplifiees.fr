@@ -1,0 +1,31 @@
+- content_for(:title, 'Confirmez votre adresse email')
+
+- content_for :footer do
+  = render partial: 'root/footer'
+
+.container.devise-container.devise-confirmations
+  .one-column-centered
+    %h1.center Votre jeton de connection est invalide
+
+    %p.confirmation-preamble
+      Lors de la création de compte, un jeton aléatoire est généré afin d'identifier la demande.
+      Ce jeton nous est ensuite transmis à nouveau lorsque vous cliquez sur l'email d'activation : cela permet de garantir
+      que vous avez bien demandé la création d'un compte, puis que vous possédez bien l'adresse email utilisée.
+
+    %p.confirmation-preamble
+      Le jeton que vous venez d'utiliser est invalide : cela peut arriver
+      s'il est trop vieux ou lors une erreur de copier/coller, par exemple.
+      Nous ne pouvons donc pas activer votre compte, car nous n'avons pas de garantie que vous avez bien fait la demande initiale.
+
+    %p.confirmation-instructions
+      %strong Afin d'activer votre compte,
+      vous devez utiliser un autre jeton de confirmation.
+      Nous pouvons vous en renvoyer un avec le formulaire ci-dessous.
+
+    .confirmation-resend
+
+      = form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { class: 'form' }) do |f|
+        = f.label :email, 'Votre email'
+        %br
+        = f.email_field :email, placeholder: 'Email', class: 'small', autofocus: true
+        = f.submit 'Renvoyer un email de confirmation', class: 'button'
