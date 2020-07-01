@@ -96,7 +96,7 @@ describe Users::ConfirmationsController, type: :controller do
       end
 
       it 'suggests the user to ask for a new confirmation token' do
-        expect(response.body).to have_content('Votre jeton de connection est invalide')
+        expect(response.body).to have_content('Votre lien de confirmation est invalide')
       end
     end
   end
