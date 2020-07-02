@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_11_122406) do
+ActiveRecord::Schema.define(version: 2020_06_30_140356) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -134,13 +134,13 @@ ActiveRecord::Schema.define(version: 2020_06_11_122406) do
   create_table "avis", id: :serial, force: :cascade do |t|
     t.string "email"
     t.text "introduction"
-    t.text "answer"
     t.integer "instructeur_id"
     t.integer "dossier_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "claimant_id", null: false
     t.boolean "confidentiel", default: false, null: false
+    t.string "answer"
     t.index ["claimant_id"], name: "index_avis_on_claimant_id"
     t.index ["dossier_id"], name: "index_avis_on_dossier_id"
     t.index ["instructeur_id"], name: "index_avis_on_instructeur_id"
@@ -153,7 +153,6 @@ ActiveRecord::Schema.define(version: 2020_06_11_122406) do
   end
 
   create_table "champs", id: :serial, force: :cascade do |t|
-    t.string "value"
     t.integer "type_de_champ_id"
     t.integer "dossier_id"
     t.string "type"
@@ -163,6 +162,7 @@ ActiveRecord::Schema.define(version: 2020_06_11_122406) do
     t.integer "etablissement_id"
     t.bigint "parent_id"
     t.integer "row"
+    t.string "value"
     t.index ["dossier_id"], name: "index_champs_on_dossier_id"
     t.index ["parent_id"], name: "index_champs_on_parent_id"
     t.index ["private"], name: "index_champs_on_private"
@@ -182,11 +182,11 @@ ActiveRecord::Schema.define(version: 2020_06_11_122406) do
   create_table "commentaires", id: :serial, force: :cascade do |t|
     t.string "email"
     t.datetime "created_at", null: false
-    t.string "body"
     t.integer "dossier_id"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.bigint "instructeur_id"
+    t.string "body"
     t.index ["dossier_id"], name: "index_commentaires_on_dossier_id"
     t.index ["instructeur_id"], name: "index_commentaires_on_instructeur_id"
     t.index ["user_id"], name: "index_commentaires_on_user_id"
@@ -248,16 +248,14 @@ ActiveRecord::Schema.define(version: 2020_06_11_122406) do
     t.datetime "processed_at"
     t.text "motivation"
     t.datetime "hidden_at"
-    t.text "search_terms"
-    t.text "private_search_terms"
     t.bigint "groupe_instructeur_id"
     t.datetime "brouillon_close_to_expiration_notice_sent_at"
     t.datetime "groupe_instructeur_updated_at"
     t.datetime "en_construction_close_to_expiration_notice_sent_at"
+    t.string "search_terms"
+    t.string "private_search_terms"
     t.interval "en_construction_conservation_extension", default: "PT0S"
     t.datetime "termine_close_to_expiration_notice_sent_at"
-    t.index "to_tsvector('french'::regconfig, (search_terms || private_search_terms))", name: "index_dossiers_on_search_terms_private_search_terms", using: :gin
-    t.index "to_tsvector('french'::regconfig, search_terms)", name: "index_dossiers_on_search_terms", using: :gin
     t.index ["archived"], name: "index_dossiers_on_archived"
     t.index ["groupe_instructeur_id"], name: "index_dossiers_on_groupe_instructeur_id"
     t.index ["hidden_at"], name: "index_dossiers_on_hidden_at"
@@ -560,6 +558,16 @@ ActiveRecord::Schema.define(version: 2020_06_11_122406) do
     t.string "version", null: false
   end
 
+  create_table "traitements", force: :cascade do |t|
+    t.bigint "dossier_id"
+    t.bigint "instructeur_id"
+    t.string "motivation"
+    t.string "state"
+    t.datetime "processed_at"
+    t.index ["dossier_id"], name: "index_traitements_on_dossier_id"
+    t.index ["instructeur_id"], name: "index_traitements_on_instructeur_id"
+  end
+
   create_table "trusted_device_tokens", force: :cascade do |t|
     t.string "token", null: false
     t.bigint "instructeur_id"
@@ -660,6 +668,8 @@ ActiveRecord::Schema.define(version: 2020_06_11_122406) do
   add_foreign_key "received_mails", "procedures"
   add_foreign_key "refused_mails", "procedures"
   add_foreign_key "services", "administrateurs"
+  add_foreign_key "traitements", "dossiers"
+  add_foreign_key "traitements", "instructeurs"
   add_foreign_key "trusted_device_tokens", "instructeurs"
   add_foreign_key "types_de_champ", "types_de_champ", column: "parent_id"
   add_foreign_key "users", "administrateurs"
